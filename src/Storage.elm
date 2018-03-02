@@ -4,7 +4,6 @@ import Models exposing (Model, init)
 import Clickers
 import Upgrades
 import Types exposing (..)
-import Time exposing (Time)
 import Maybe.Extra
 
 port saveModel : SerializedModel -> Cmd msg
@@ -18,6 +17,7 @@ serializeModel model =
   { loc_counter = model.loc_counter
   , clickers = serializeClickers model.clickers
   , lastTick = model.lastTick
+  , clickEarnings = model.clickEarnings
   , remaining_upgrades = serializeUpgrades model.remaining_upgrades
   , active_upgrades = serializeUpgrades model.active_upgrades
   }
@@ -33,6 +33,7 @@ deserializeModel serializedModel =
           | loc_counter = sModel.loc_counter
           , clickers = deserializeClickers sModel.clickers
           , lastTick = sModel.lastTick
+          , clickEarnings = sModel.clickEarnings
           , remaining_upgrades = deserializeUpgrades sModel.remaining_upgrades
           , active_upgrades = deserializeUpgrades sModel.active_upgrades
         }

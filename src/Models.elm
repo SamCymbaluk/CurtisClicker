@@ -8,16 +8,20 @@ import Types exposing (Clicker, Upgrade, ClickerData)
 import Time exposing (Time)
 import Bootstrap.Accordion as Accordion
 import Time exposing (Time, second)
+import Effects exposing (EffectObject)
 
 type alias Model =
   { loc_counter : Float
   , clickers : List ClickerData
   , lastTick : Time
+  , clickEarnings : Float
   , remaining_upgrades : List Upgrade
   , active_upgrades : List Upgrade
   , gui :
     { clickerAccordion : Accordion.State
     , upgradeAccordion : Accordion.State
+    , effects : List EffectObject
+    , mousePos : { x : Int, y : Int }
     }
   }
 
@@ -26,11 +30,14 @@ init =
   ({ loc_counter = 0
    , clickers = Clickers.init
    , lastTick = 0
+   , clickEarnings = 1.0
    , remaining_upgrades = Upgrades.list
    , active_upgrades = []
    , gui =
      { clickerAccordion = Accordion.initialState
      , upgradeAccordion = Accordion.initialState
+     , effects = []
+     , mousePos = { x = 0, y = 0 }
      }
   }, Cmd.none)
 

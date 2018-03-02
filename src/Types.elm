@@ -23,6 +23,7 @@ type alias SerializedModel =
   { loc_counter : Float
   , clickers : List (Int, Int, Float)
   , lastTick : Time
+  , clickEarnings : Float
   , remaining_upgrades : List Int
   , active_upgrades : List Int
   }

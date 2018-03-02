@@ -8,6 +8,7 @@ import Models exposing (Model)
 import Msgs exposing (Msg)
 import Shop
 import Clickers
+import Effects
 import Types exposing (..)
 import Styles exposing (..)
 
@@ -19,28 +20,23 @@ import Bootstrap.Grid.Row as Row
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Accordion as Accordion
 import Bootstrap.Card as Card
-
-
-{-
-Temporary view for testing purposes
--}
-
+import Bootstrap.Button as Button
 
 view : Model -> Html Msg
 view model =
   div [style [("margin", "0px"), ("padding", "0px")]]
-      [ Grid.container [style gridContainer]
+      ([ Grid.container [style gridContainer]
         [ Grid.row [Row.attrs [style [("margin", "0px"), ("padding", "0px")]]]
-            [ Grid.col [Col.xs2, Col.attrs [style sideCol]]
+            [ Grid.col [Col.xs3, Col.attrs [style sideCol]]
                 [ clickerTitle
                 , clickerAccordion model
                 ]
-            , Grid.col [Col.xs8, Col.attrs [style gridCol]] [ centerDiv model ]
-            , Grid.col [Col.xs2, Col.attrs [style sideCol]] [ text (toString model) ]
+            , Grid.col [Col.xs6, Col.attrs [style gridCol]] [ centerDiv model ]
+            , Grid.col [Col.xs3, Col.attrs [style sideCol]] [ text (toString model) ]
             ]
         ]
       , earningsPanel model
-      ]
+      ] ++ (Effects.drawEffects model.gui.effects))
 
 centerDiv : Model -> Html Msg
 centerDiv model =
@@ -106,11 +102,13 @@ clickerCard model (c, q, m) =
     { id = Clickers.name c False
     , options = [Card.attrs [style card]]
     , header =
-        Accordion.header [style cardHeader] <| Accordion.toggle []
+        Accordion.header [style cardHeader] (Accordion.toggle []
           [ text (Clickers.name c False)
           , span [style [("float", "right")]]
               [ text (toString q) ]
-          ]
+          ])
+          |> Accordion.prependHeader
+              [ clickerPurchaseButton model (c, q, m) ]
     , blocks =
       [ Accordion.block []
         [ Card.text []
@@ -162,10 +160,20 @@ clickerCard model (c, q, m) =
               , span [style (codeText ++ [("color", darkTheme.text)])]
                   [text ")"]
               ]
-          , button [ disabled (not (Shop.canAfford model (ClickerItem c)))
-              , onClick (Msgs.Purchase (ClickerItem c)) ]
-              [ text "Buy" ]
           ]
         ]
       ]
     }
+
+clickerPurchaseButton : Model -> ClickerData -> Html Msg
+clickerPurchaseButton model (c, q, m) =
+   Button.button
+    [ Button.small
+    , Button.primary
+    , Button.disabled (not (Shop.canAfford model (ClickerItem c)))
+    , Button.attrs
+        [ onClick (Msgs.Purchase (ClickerItem c))
+        , style purchaseButton
+        ]
+    ]
+    [ text "+" ]

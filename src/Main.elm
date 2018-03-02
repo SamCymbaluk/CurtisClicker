@@ -8,6 +8,8 @@ import Update exposing (update)
 import View exposing (view)
 import Time exposing (Time, second)
 import Bootstrap.Accordion as Accordion
+import AnimationFrame as Anim
+import Mouse
 
 tickRate : Time
 tickRate = second / 30
@@ -16,10 +18,12 @@ tickRate = second / 30
 subscriptions : Model -> Sub Msg
 subscriptions model = Sub.batch
   [ Time.every tickRate (Msgs.Tick tickRate)
+  , Anim.diffs Msgs.AnimTick
   , Time.every (second * 10) (Msgs.SaveInterval (second * 10))
   , Accordion.subscriptions model.gui.clickerAccordion Msgs.ClickerAccordion
   , Accordion.subscriptions model.gui.upgradeAccordion Msgs.UpgradeAccordion
   , loadModelRes Msgs.ApplyModel
+  , Mouse.moves Msgs.MousePos
   ]
 
 {- Main -}

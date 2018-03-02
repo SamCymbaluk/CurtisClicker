@@ -52,6 +52,7 @@ curtisImg =
   , ("margin-left", "auto")
   , ("margin-right", "auto")
   , ("width", "25%")
+  , ("z-index", "10")
   ]
 
 locRateText =
@@ -111,4 +112,9 @@ codeText =
   , ("margin", "3px")
   , ("margin-left", "0px")
   , ("margin-right", "0px")
+  ]
+
+purchaseButton =
+  [ ("margin-right", "1rem")
+  , ("padding", "4px")
   ]
