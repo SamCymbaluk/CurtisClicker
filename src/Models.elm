@@ -22,6 +22,7 @@ type alias Model =
     , upgradeAccordion : Accordion.State
     , effects : List EffectObject
     , mousePos : { x : Int, y : Int }
+    , lastClick : Time
     }
   }
 
@@ -38,6 +39,7 @@ init =
      , upgradeAccordion = Accordion.initialState
      , effects = []
      , mousePos = { x = 0, y = 0 }
+     , lastClick = 0
      }
   }, Cmd.none)
 

@@ -32,7 +32,7 @@ view model =
                 , clickerAccordion model
                 ]
             , Grid.col [Col.xs6, Col.attrs [style gridCol]] [ centerDiv model ]
-            , Grid.col [Col.xs3, Col.attrs [style sideCol]] [ text (toString model) ]
+            , Grid.col [Col.xs3, Col.attrs [style sideCol]] [ {-text (toString model)-} ]
             ]
         ]
       , earningsPanel model
@@ -42,7 +42,7 @@ centerDiv : Model -> Html Msg
 centerDiv model =
   div []
       [ p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]
-      , img [src "img/curtis-idle.png", style curtisImg, onClick Msgs.Click] []
+      , img [src "img/curtis-idle.png", style curtisImg, class (if model.lastTick - model.gui.lastClick > second * 0.05 then "hvr-grow" else "hvr-shrink"), onClick Msgs.Click] []
       ]
 
 earningsPanel : Model -> Html Msg

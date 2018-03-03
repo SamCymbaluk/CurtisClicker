@@ -45,8 +45,11 @@ update msg model =
             earnings = Models.formattedLoc model.clickEarnings
             foldFn (_, _, q, _) b = q + b
             effectAmt = List.foldr (foldFn) 0 earnings
+            oldGui = model.gui
+            newGui = {oldGui | lastClick = model.lastTick}
           in
-            ({ model | loc_counter = model.loc_counter + model.clickEarnings }
+            ({ model | loc_counter = model.loc_counter + model.clickEarnings
+                     , gui = newGui }
              , Random.generate Msgs.ClickEffects (Effects.generateVels effectAmt))
         Msgs.ClickEffects vels ->
           let
@@ -75,7 +78,7 @@ clickEffects model vels =
   let
     formattedVels =
       vels
-        |> List.map (\(x, y) -> (1 * (x - 0.5), 1 * (y - 0.5)))
+        |> List.map (\(x, y) -> ((x - 0.5), -0.5*y - 0.2))
     earnings =
       Models.formattedLoc model.clickEarnings
         |> List.filter (\(_, _, q, _) -> q /= 0)

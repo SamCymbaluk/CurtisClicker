@@ -47,11 +47,12 @@ sideTitleText =
 {- Center -}
 
 curtisImg =
-  [ ("display", "block")
-  , ("margin-top", "-80px")
-  , ("margin-left", "auto")
-  , ("margin-right", "auto")
-  , ("width", "25%")
+  [ ("position", "fixed")
+  , ("left", "50vw")
+  , ("top", "40vh")
+  , ("margin-left", "-8%")
+  , ("margin-top", "-8%")
+  , ("width", "16%")
   , ("z-index", "10")
   ]
 
