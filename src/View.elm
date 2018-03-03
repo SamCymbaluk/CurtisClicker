@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Time exposing (Time, second)
 import Models exposing (Model)
 import Msgs exposing (Msg)
+import BackgroundCode
 import Shop
 import Clickers
 import Effects
@@ -22,6 +23,8 @@ import Bootstrap.Accordion as Accordion
 import Bootstrap.Card as Card
 import Bootstrap.Button as Button
 
+import SyntaxHighlight exposing (useTheme, oneDark, gitHub, elm, toBlockHtml)
+
 view : Model -> Html Msg
 view model =
   div [style [("margin", "0px"), ("padding", "0px")]]
@@ -32,16 +35,30 @@ view model =
                 , clickerAccordion model
                 ]
             , Grid.col [Col.xs6, Col.attrs [style gridCol]] [ centerDiv model ]
-            , Grid.col [Col.xs3, Col.attrs [style sideCol]] [ {-text (toString model)-} ]
+            , Grid.col [Col.xs3, Col.attrs [style sideCol]]
+                [ upgradesTitle
+                , upgradesAccordion model
+                ]
             ]
         ]
       , earningsPanel model
       ] ++ (Effects.drawEffects model.gui.effects))
 
+formatCode : String -> Html Msg
+formatCode codeText =
+  div [style [("user-select", "none")]]
+    [ useTheme oneDark
+    , elm codeText
+        |> Result.map (toBlockHtml (Just 1))
+        |> Result.withDefault
+            (code [] [ text codeText ])
+    ]
+
 centerDiv : Model -> Html Msg
 centerDiv model =
-  div []
-      [ p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]
+  div [style [("overflow-y", "hidden")]]
+      [ --div [style [("position", "absolute"), ("left", "0px"), ("bottom",  toString ((model.lastTick / 500) - toFloat (100*(truncate ((model.lastTick / 500) / 100)))) ++ "vh")]] [formatCode BackgroundCode.code]
+      div [style locRateDiv] [p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]]
       , curtisDiv model
       ]
 
@@ -66,11 +83,12 @@ curtisDiv model =
         7
     level = Basics.min 7 (if model.lastTick - model.gui.lastClick > second * 1 then curtisLevel else curtisLevel + 1)
   in
-    div [style curtisImg]
-        [img [ src ("img/curtis-" ++ toString level ++ ".png")
-             , draggable "false"
-             , class (if model.lastTick - model.gui.lastClick > second * 0.05 then "hvr-grow" else "hvr-shrink")
-             , onClick Msgs.Click] []]
+    img [ src ("img/curtis-" ++ toString level ++ ".png")
+        , draggable "false"
+        , id "curtis"
+        , style curtisImg
+        , class "hvr-grow"--(if model.lastTick - model.gui.lastClick > second * 0.05 then "hvr-grow" else "hvr-shrink")
+        , onClick Msgs.Click] []
 
 earningsPanel : Model -> Html Msg
 earningsPanel model =
@@ -91,23 +109,16 @@ earningCol model (title, titles, amt, image) =
         ]
     ]
 
-
-clickerDiv : Model -> ClickerData -> Html Msg
-clickerDiv model (c, q, m) =
-  div []
-      [ text ((toString c) ++ " |#| Cost: " ++ (toString (Clickers.cost c)) ++ " Q: " ++ (toString q) ++ " M: " ++ (toString m))
-      , br [] []
-      , button [ disabled (not (Shop.canAfford model (ClickerItem c)))
-               , onClick (Msgs.Purchase (ClickerItem c)) ]
-               [ text "Buy" ]
-      , br [] []
-      , br [] []
-      ]
-
 clickerTitle : Html Msg
 clickerTitle =
   div [style sideTitleDiv]
       [ p [style sideTitleText] [text "Auto Clickers"]
+      ]
+
+upgradesTitle : Html Msg
+upgradesTitle =
+  div [style sideTitleDiv]
+      [ p [style sideTitleText] [text "Upgrades"]
       ]
 
 clickerAccordion : Model -> Html Msg
@@ -117,6 +128,7 @@ clickerAccordion model =
       |> Accordion.cards
         (List.map (clickerCard model) model.clickers)
       |> Accordion.view model.gui.clickerAccordion
+
 
 clickerCard : Model -> ClickerData -> Accordion.Card Msg
 clickerCard model (c, q, m) =
@@ -139,54 +151,12 @@ clickerCard model (c, q, m) =
     , blocks =
       [ Accordion.block []
         [ Card.text []
-          [ p [style (codeText ++ [("color", darkTheme.text)])]
-              [ text ("{- " ++ (Clickers.description c) ++ " -}")]
-          , p [style (codeText ++ [("color", darkTheme.text_blue)])]
-              [ text "cost"
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text " = ("]
-              , span [style (codeText ++ [("color", darkTheme.text_orange)])]
-                  [text (toString cost)]
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text ", "]
-              , span [style (codeText ++ [("color", darkTheme.text_green)])]
-                  [text ("\"" ++ costType ++ "\"")]
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text ")"]
-              ]
-          , p [style (codeText ++ [("color", darkTheme.text_blue)])]
-              [ text "baseEarnings"
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text " = ("]
-              , span [style (codeText ++ [("color", darkTheme.text_orange)])]
-                  [text (toString earnings)]
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text ", "]
-              , span [style (codeText ++ [("color", darkTheme.text_green)])]
-                  [text ("\"" ++ earningsType ++ "\"")]
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text ")"]
-              ]
-          , p [style (codeText ++ [("color", darkTheme.text_blue)])]
-              [ text "earningMultiplier"
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text " = "]
-              , span [style (codeText ++ [("color", darkTheme.text_orange)])]
-                  [text (toString (m))]
-              ]
-          , p [style (codeText ++ [("color", darkTheme.text_blue)])]
-              [ text "totalEarnings"
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text " = ("]
-              , span [style (codeText ++ [("color", darkTheme.text_orange)])]
-                  [text (toString totEarnings)]
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text ", "]
-              , span [style (codeText ++ [("color", darkTheme.text_green)])]
-                  [text ("\"" ++ totEarningsType ++ "\"")]
-              , span [style (codeText ++ [("color", darkTheme.text)])]
-                  [text ")"]
-              ]
+          [ formatCode <|
+            "{- " ++ (Clickers.description c) ++ " -}\n" ++
+            "cost = (" ++ (toString cost) ++ ", \"" ++ costType ++ "\")\n" ++
+            "baseEarnings = (" ++ (toString earnings) ++ ", \"" ++ earningsType ++ "\")\n" ++
+            "earningMultiplier = " ++ (toString m) ++ "\n" ++
+            "totalEarnings = (" ++ (toString totEarnings) ++ ", \"" ++ totEarningsType ++ "\")\n"
           ]
         ]
       ]
@@ -204,3 +174,11 @@ clickerPurchaseButton model (c, q, m) =
         ]
     ]
     [ text "+" ]
+
+upgradesAccordion : Model -> Html Msg
+upgradesAccordion model =
+    Accordion.config Msgs.ClickerAccordion
+      |> Accordion.withAnimation
+      |> Accordion.cards
+        (List.map (clickerCard model) model.clickers)
+      |> Accordion.view model.gui.clickerAccordion

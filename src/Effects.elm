@@ -32,9 +32,9 @@ tickEffect interval effect =
       (acc_x, acc_y) = effect.acc
     in
       Just { effect | x = effect.x + vel_x * interval
-               , y = effect.y + vel_y * interval
-               , vel = (vel_x + acc_x, vel_y + acc_y)
-               , ticksToLive = effect.ticksToLive - 1 }
+           , y = effect.y + vel_y * interval
+           , vel = (vel_x + acc_x, vel_y + acc_y)
+           , ticksToLive = effect.ticksToLive - 1 }
 
 shouldDie : EffectObject -> Bool
 shouldDie effect =
@@ -56,6 +56,7 @@ drawEffect effect =
       , ("top", toString ((round effect.y) - (effect.height // 2)) ++ "px")
       , ("left", toString ((round effect.x) - (effect.width // 2)) ++ "px")
       , ("z-index", "0")
+      , ("pointer-events", "none")
       ]
     ]
     []

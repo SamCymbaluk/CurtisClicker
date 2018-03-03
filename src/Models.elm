@@ -3,7 +3,6 @@ module Models exposing (..)
 import List exposing (map)
 import Msgs exposing (Msg)
 import Clickers exposing (earnings)
-import Upgrades exposing (modifiers)
 import Types exposing (Clicker, Upgrade, ClickerData)
 import Time exposing (Time)
 import Bootstrap.Accordion as Accordion
@@ -32,7 +31,7 @@ init =
    , clickers = Clickers.init
    , lastTick = 0
    , clickEarnings = 1.0
-   , remaining_upgrades = Upgrades.list
+   , remaining_upgrades = Types.upgradeList
    , active_upgrades = []
    , gui =
      { clickerAccordion = Accordion.initialState
@@ -82,7 +81,7 @@ formattedLoc l =
     , ("Haskell Program", "Haskell Programs",       (locs // 100^2) % 100, "haskell")
     , ("Research Paper", "Research Papers",         (locs // 100^3) % 100, "research_paper")
     , ("PhD Thesis", "PhD Theses",                  (locs // 100^4) % 100, "thesis")
-    , ("Turing Award", "Turing Awards",             (locs // 100^5) % 100, "turing_award")
+    , ("Turing Award", "Turing Awards",             (locs // 100^5)      , "turing_award")
     ]
 
 reducedLocFormat : Float -> (Float, String)
@@ -108,26 +107,3 @@ reducedLocFormat locs =
     List.filter (listFilter locs) values
      |> List.head
      |> calcValue
-
-applyUpgrade : Model -> Upgrade -> Model
-applyUpgrade model upgrade =
-  applyModifiers model (modifiers upgrade)
-
-applyModifiers : Model -> (List Clicker, Float) -> Model
-applyModifiers model modifiers = case modifiers of
-  ([], _) ->
-    model
-  ((c::cs), multiplier) ->
-    let
-      -- Function for map to apply to selectively
-      -- update clicker tuples
-      updateClicker clicker multiplier entry =
-        let
-          (c, q, m) = entry
-        in
-          if clicker == c then
-            (c, q, m + multiplier)
-          else
-            entry
-    in
-      applyModifiers { model | clickers = map (updateClicker c multiplier) model.clickers } (cs, multiplier)

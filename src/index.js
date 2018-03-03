@@ -1,6 +1,6 @@
 'use strict';
 
-require('ace-css/css/ace.css');
+//require('ace-css/css/ace.css');
 require('font-awesome/css/font-awesome.css');
 
 // Require index.html so it gets copied to dist
@@ -18,4 +18,10 @@ app.ports.saveModel.subscribe(function(model) {
 
 app.ports.loadModel.subscribe(function() {
   app.ports.loadModelRes.send(JSON.parse(localStorage.getItem('elm-model')));
-})
+});
+
+/*setTimeout(() => {
+  document.getElementById("curtis").addEventListener("click", () => {
+    alert("Test");
+  });
+}, 50);*/

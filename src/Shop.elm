@@ -43,7 +43,7 @@ purchase model item = case item of
       }
   UpgradeItem upgrade ->
     let
-      model_ = Models.applyUpgrade model upgrade
+      model_ = Upgrades.applyUpgrade model upgrade
     in
       { model_ |
         loc_counter = model.loc_counter - (toFloat (cost model (UpgradeItem upgrade))) --Subtract cost

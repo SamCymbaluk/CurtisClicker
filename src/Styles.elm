@@ -3,7 +3,7 @@ module Styles exposing (..)
 import Html exposing (..)
 
 darkTheme =
-  { background = "#282A34"
+  { background = "#282C34"
   , sidebar = "#21232b"
   , text = "#ABAEBF"
   , text_blue = "#61AFEF"
@@ -35,6 +35,7 @@ sideCol = gridCol ++
 
 sideTitleDiv =
   [ ("border-bottom", "2px solid " ++ darkTheme.text)
+  , ("margin-top", "1rem")
   ]
 
 sideTitleText =
@@ -56,8 +57,17 @@ curtisImg =
   , ("z-index", "10")
   ]
 
+locRateDiv =
+  [ ("position", "fixed")
+  , ("width", "100%")
+  , ("left", "0vw")
+  , ("top", "8vh")
+  , ("pointer-events", "none")
+  ]
+
 locRateText =
-  [ ("text-align", "center")
+  [ ("margins", "auto")
+  , ("text-align", "center")
   , ("font-family", "Fira Mono")
   , ("font-size", "32px")
   , ("color", darkTheme.text)
@@ -72,6 +82,7 @@ earningPanelDiv =
   , ("position", "fixed")
   , ("bottom", "0px")
   , ("width", "100vw")
+  , ("pointer-events", "none")
   ]
 
 earningIcon =

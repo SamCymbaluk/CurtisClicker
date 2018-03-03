@@ -2,7 +2,17 @@ module Types exposing (..)
 
 import Time exposing (Time)
 
-type Upgrade = Ubuntu | Emacs | Coffee
+type Upgrade =
+  Ubuntu
+  | Emacs
+  | Coffee
+
+upgradeList : List Upgrade
+upgradeList = [
+  Ubuntu
+  , Emacs
+  , Coffee
+  ]
 
 type Clicker =
   Macro
@@ -12,6 +22,17 @@ type Clicker =
   | Professor
   | ResearchTeam
   | AGI
+
+clickerList : List Clicker
+clickerList = [
+  Macro
+  , BashScript
+  , UndergradStudent
+  , GradStudent
+  , Professor
+  , ResearchTeam
+  , AGI
+  ]
 
 type alias ClickerData = (Clicker, Int, Float)
 

@@ -3,19 +3,8 @@ module Clickers exposing (..)
 import List exposing (map)
 import Types exposing (..)
 
-list : List Clicker
-list = [
-  Macro
-  , BashScript
-  , UndergradStudent
-  , GradStudent
-  , Professor
-  , ResearchTeam
-  , AGI
-  ]
-
 init : List ClickerData
-init = map (\c -> (c, 0, 1.0)) list
+init = map (\c -> (c, 0, 1.0)) clickerList
 
 clicker : ClickerData -> Clicker
 clicker (c, _, _) = c
