@@ -2,11 +2,14 @@ module Update exposing (..)
 
 import Models exposing (Model)
 import Storage
+import Types exposing (..)
 import Msgs exposing (Msg)
 import Time exposing (Time, second)
 import Effects exposing (EffectObject)
+import Bootstrap.Accordion as Accordion
 import Shop
 import Random
+import Mouse
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -14,67 +17,110 @@ update msg model =
         Msgs.None ->
           (model, Cmd.none)
         Msgs.Tick interval time ->
-          case model.lastTick of
-            0 ->
-              ({ model | lastTick = time }, Storage.loadModel "IshouldntNeedThisStringElm")
-            _ ->
-              ({ model |
-                loc_counter = model.loc_counter + (Models.totalEarnings model (time - model.lastTick))
-                , lastTick = time
-                }, Cmd.none)
+          tick model interval time
         Msgs.AnimTick diff ->
-          let
-            oldGui = model.gui
-            newGui =
-              { oldGui
-                | effects = Effects.tickEffects oldGui.effects diff }
-          in
-            ({ model | gui = newGui }, Cmd.none)
+          animTick model diff
         Msgs.SaveInterval interval time ->
-          (model, Storage.saveModel (Storage.serializeModel model))
+          saveInterval model interval time
         Msgs.ApplyModel sModel ->
-          (Storage.deserializeModel sModel, Cmd.none)
+          applyModel model sModel
         Msgs.MousePos pos ->
-          let
-            oldGui = model.gui
-            newGui = {oldGui | mousePos = { x = pos.x, y = pos.y }}
-          in
-            ({ model | gui = newGui }, Cmd.none)
+          mousePos model pos
         Msgs.Click ->
-          let
-            earnings = Models.formattedLoc model.clickEarnings
-            foldFn (_, _, q, _) b = q + b
-            effectAmt = List.foldr (foldFn) 0 earnings
-            oldGui = model.gui
-            newGui = {oldGui | lastClick = model.lastTick}
-          in
-            ({ model | loc_counter = model.loc_counter + model.clickEarnings
-                     , gui = newGui }
-             , Random.generate Msgs.ClickEffects (Effects.generateVels effectAmt))
+          click model
         Msgs.ClickEffects vels ->
-          let
-            oldGui = model.gui
-            newGui = {oldGui | effects = oldGui.effects ++ clickEffects model vels}
-          in
-            ({ model | gui = newGui }, Cmd.none)
+          clickEffects model vels
         Msgs.Purchase item ->
-          (Shop.purchase model item, Cmd.none)
+          purchase model item
         Msgs.ClickerAccordion state ->
-          let
-            oldGui = model.gui
-            newGui = {oldGui | clickerAccordion = state}
-          in
-            ({ model | gui = newGui }, Cmd.none)
+          clickerAccordion model state
         Msgs.UpgradeAccordion state ->
-          let
-            oldGui = model.gui
-            newGui = {oldGui | upgradeAccordion = state}
-          in
-            ({ model | gui = newGui }, Cmd.none)
+          upgradeAccordion model state
 
+tick : Model -> Time -> Time -> (Model, Cmd Msg)
+tick model interval time =
+  case model.lastTick of
+    0 ->
+      ({ model | lastTick = time }, Storage.loadModel "IshouldntNeedThisStringElm")
+    _ ->
+      ({ model |
+        loc_counter = model.loc_counter + (Models.totalEarnings model (time - model.lastTick))
+        , lastTick = time
+        }, Cmd.none)
 
-clickEffects : Model -> List (Float, Float) -> List EffectObject
+animTick : Model -> Float -> (Model, Cmd Msg)
+animTick model diff =
+  let
+    oldGui = model.gui
+    newGui =
+      { oldGui
+        | effects = Effects.tickEffects oldGui.effects diff }
+  in
+    ({ model | gui = newGui }, Cmd.none)
+
+saveInterval : Model -> Time -> Time -> (Model, Cmd Msg)
+saveInterval model interval time =
+  (model, Storage.saveModel (Storage.serializeModel model))
+
+applyModel : Model -> Maybe SerializedModel -> (Model, Cmd Msg)
+applyModel model sModel =
+  (Storage.deserializeModel sModel, Cmd.none)
+
+mousePos : Model -> Mouse.Position -> (Model, Cmd Msg)
+mousePos model pos =
+  let
+    oldGui = model.gui
+    newGui = {oldGui | mousePos = { x = pos.x, y = pos.y }}
+  in
+    ({ model | gui = newGui }, Cmd.none)
+
+click : Model -> (Model, Cmd Msg)
+click model =
+  let
+    earnings = Models.formattedLoc model.clickEarnings
+    foldFn (_, _, q, _) b = q + b
+    effectAmt = List.foldr (foldFn) 0 earnings
+    oldGui = model.gui
+    newGui = {oldGui | lastClick = model.lastTick}
+  in
+    ({ model | loc_counter = model.loc_counter + model.clickEarnings
+             , gui = newGui }
+     , Random.generate Msgs.ClickEffects (Effects.generateVels effectAmt))
+
+clickEffects : Model -> List (Float, Float) -> (Model, Cmd Msg)
 clickEffects model vels =
+  let
+    oldGui = model.gui
+    newGui = {oldGui | effects = oldGui.effects ++ createClickEffects model vels}
+  in
+    ({ model | gui = newGui }, Cmd.none)
+
+purchase : Model -> ShopItem -> (Model, Cmd Msg)
+purchase model item =
+  (Shop.purchase model item, Cmd.none)
+
+clickerAccordion : Model -> Accordion.State -> (Model, Cmd Msg)
+clickerAccordion model state =
+  let
+    oldGui = model.gui
+    newGui = {oldGui | clickerAccordion = state}
+  in
+    ({ model | gui = newGui }, Cmd.none)
+
+upgradeAccordion : Model -> Accordion.State -> (Model, Cmd Msg)
+upgradeAccordion model state =
+  let
+    oldGui = model.gui
+    newGui = {oldGui | upgradeAccordion = state}
+  in
+    ({ model | gui = newGui }, Cmd.none)
+
+{-
+  Helper functions
+-}
+
+createClickEffects : Model -> List (Float, Float) -> List EffectObject
+createClickEffects model vels =
   let
     formattedVels =
       vels

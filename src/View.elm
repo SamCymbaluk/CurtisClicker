@@ -42,8 +42,35 @@ centerDiv : Model -> Html Msg
 centerDiv model =
   div []
       [ p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]
-      , img [src "img/curtis-idle.png", style curtisImg, class (if model.lastTick - model.gui.lastClick > second * 0.05 then "hvr-grow" else "hvr-shrink"), onClick Msgs.Click] []
+      , curtisDiv model
       ]
+
+curtisDiv : Model -> Html Msg
+curtisDiv model =
+  let
+    locs = Models.totalEarnings model second
+    curtisLevel =
+      if locs < 1.0 then
+        1
+      else if locs < 100.0 then
+        2
+      else if locs < 5000.0 then
+        3
+      else if locs < 100000.0 then
+        4
+      else if locs < 500000.0 then
+        5
+      else if locs < 1000000.0 then
+        6
+      else
+        7
+    level = Basics.min 7 (if model.lastTick - model.gui.lastClick > second * 1 then curtisLevel else curtisLevel + 1)
+  in
+    div [style curtisImg]
+        [img [ src ("img/curtis-" ++ toString level ++ ".png")
+             , draggable "false"
+             , class (if model.lastTick - model.gui.lastClick > second * 0.05 then "hvr-grow" else "hvr-shrink")
+             , onClick Msgs.Click] []]
 
 earningsPanel : Model -> Html Msg
 earningsPanel model =
