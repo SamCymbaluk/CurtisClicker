@@ -69,11 +69,12 @@ description : Clicker -> String
 description clicker =
   case clicker of
     Macro ->
-      "Macro"
+      "Keep everything under CTRL"
     BashScript ->
-      "Bash Script"
+      "'Automating' comes from the roots 'auto-' meaning\n"
+      ++ "'self-', and 'mating', meaning 'screwing'. ~xkcd"
     UndergradStudent ->
-      "Undergrad Student"
+      "Code quality not guaranteed"
     GradStudent ->
       "Grad Student"
     Professor ->

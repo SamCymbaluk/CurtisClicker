@@ -59,9 +59,12 @@ description upgrade = case upgrade of
   Ubuntu ->
     "The first step towards the dark side."
   Emacs ->
-    "Emacs"
+    "Take the time to learn Emacs and you will\n"
+    ++ "reap the rewards for the rest of your career\n"
+    ++ "...or so I'm told"
   Coffee ->
-    "Coffee"
+    "A programmer is just an organism that\n"
+    ++ "converts coffee into code"
 
 clickerAmount : Model -> Clicker -> Int
 clickerAmount model clicker =

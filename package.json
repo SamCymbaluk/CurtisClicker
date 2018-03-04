@@ -12,7 +12,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "scripts": {
-    "build": "webpack",
-    "client": "webpack-dev-server --port 3000"
+    "build": "node gen-background-code.js && webpack",
+    "client": "node gen-background-code.js && webpack-dev-server --port 3000"
   }
 }
