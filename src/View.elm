@@ -9,6 +9,7 @@ import Msgs exposing (Msg)
 import BackgroundCode
 import Shop
 import Clickers
+import Upgrades
 import Effects
 import Types exposing (..)
 import Styles exposing (..)
@@ -57,9 +58,9 @@ formatCode codeText =
 centerDiv : Model -> Html Msg
 centerDiv model =
   div [style [("overflow-y", "hidden")]]
-      [ --div [style [("position", "absolute"), ("left", "0px"), ("bottom",  toString ((model.lastTick / 500) - toFloat (100*(truncate ((model.lastTick / 500) / 100)))) ++ "vh")]] [formatCode BackgroundCode.code]
-      div [style locRateDiv] [p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]]
-      , curtisDiv model
+      [ curtisDiv model
+      , div [style locRateDiv] [p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]]
+      , div [style clickEarningsDiv] [p [style clickEarningsText] [text ((format usLocale model.clickEarnings) ++ " LoC/click")]]
       ]
 
 curtisDiv : Model -> Html Msg
@@ -154,7 +155,7 @@ clickerCard model (c, q, m) =
           [ formatCode <|
             "{- " ++ (Clickers.description c) ++ " -}\n" ++
             "cost = (" ++ (toString cost) ++ ", \"" ++ costType ++ "\")\n" ++
-            "baseEarnings = (" ++ (toString earnings) ++ ", \"" ++ earningsType ++ "\")\n" ++
+            "baseEarnings = (" ++ (toString earnings) ++ ", \"" ++ earningsType ++ "\")\n\n" ++
             "earningMultiplier = " ++ (toString m) ++ "\n" ++
             "totalEarnings = (" ++ (toString totEarnings) ++ ", \"" ++ totEarningsType ++ "\")\n"
           ]
@@ -177,8 +178,56 @@ clickerPurchaseButton model (c, q, m) =
 
 upgradesAccordion : Model -> Html Msg
 upgradesAccordion model =
-    Accordion.config Msgs.ClickerAccordion
+    Accordion.config Msgs.UpgradeAccordion
       |> Accordion.withAnimation
       |> Accordion.cards
-        (List.map (clickerCard model) model.clickers)
-      |> Accordion.view model.gui.clickerAccordion
+        (List.map (upgradeCard model) (List.filter (Upgrades.unlocked model) model.remaining_upgrades))
+      |> Accordion.view model.gui.upgradeAccordion
+
+upgradeCard : Model -> Upgrade -> Accordion.Card Msg
+upgradeCard model upgrade =
+  let
+    (cost, costType) = Models.reducedLocFormat (toFloat (Upgrades.cost upgrade))
+    (clickers, m, clickM) = Upgrades.modifiers upgrade
+  in
+    Accordion.card
+      { id = toString upgrade
+      , options = [Card.attrs [style card]]
+      , header =
+          Accordion.header [style cardHeader] (Accordion.toggle []
+            [ text (Upgrades.name upgrade)
+            , span [style [("float", "right")]]
+                [ upgradePurchaseButton model upgrade ]
+            ])
+      , blocks =
+        [ Accordion.block []
+          [ Card.text []
+            [ formatCode <|
+              "{- " ++ (Upgrades.description upgrade) ++ " -}\n" ++
+              "cost = (" ++ (toString cost) ++ ", \"" ++ costType ++ "\")\n\n" ++
+              "clickMultiplier = " ++ (toString clickM) ++ "\n\n" ++
+              "earningBoost = \"" ++ (toString (m * 100)) ++ "%\"\n" ++
+              "affectedClickers =" ++
+                if clickers == clickerList then
+                  " All"
+                else
+                  " Only\n  [ "
+                  ++ (String.join "\n  , " (List.map (\c -> "\"" ++ (Clickers.name c True) ++ "\"") clickers))
+                  ++ "\n  ]"
+            ]
+          ]
+        ]
+      }
+
+upgradePurchaseButton : Model -> Upgrade -> Html Msg
+upgradePurchaseButton model upgrade =
+   Button.button
+    [ Button.small
+    , Button.primary
+    , Button.disabled (not (Shop.canAfford model (UpgradeItem upgrade)))
+    , Button.attrs
+        [ onClick (Msgs.Purchase (UpgradeItem upgrade))
+        , style purchaseButton
+        ]
+    ]
+    [ text "Purchase" ]

@@ -51,9 +51,9 @@ curtisImg =
   [ ("position", "fixed")
   , ("left", "50vw")
   , ("top", "40vh")
-  , ("margin-left", "-8%")
-  , ("margin-top", "-8%")
-  , ("width", "16%")
+  , ("margin-left", "-15vh")
+  , ("margin-top", "-15vh")
+  , ("width", "30vh")
   , ("z-index", "10")
   ]
 
@@ -61,7 +61,7 @@ locRateDiv =
   [ ("position", "fixed")
   , ("width", "100%")
   , ("left", "0vw")
-  , ("top", "8vh")
+  , ("top", "25vh")
   , ("pointer-events", "none")
   ]
 
@@ -71,7 +71,22 @@ locRateText =
   , ("font-family", "Fira Mono")
   , ("font-size", "32px")
   , ("color", darkTheme.text)
-  , ("margin-top", "180px")
+  ]
+
+clickEarningsDiv =
+  [ ("position", "fixed")
+  , ("width", "100%")
+  , ("left", "0vw")
+  , ("top", "56vh")
+  , ("pointer-events", "none")
+  ]
+
+clickEarningsText =
+  [ ("margins", "auto")
+  , ("text-align", "center")
+  , ("font-family", "Fira Mono")
+  , ("font-size", "24px")
+  , ("color", darkTheme.text)
   ]
 
 {- Earnings panel -}
@@ -94,8 +109,7 @@ earningColumn =
   [ ("padding-top", "15px")
   , ("background-color", "#2d2f39")--"#4f5164")
   , ("border", "1px solid black")
-  , ("border-radius", "5px")
-  , ("box-shadow", "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4)")
+  --, ("box-shadow", "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4)")
   ]
 
 earningText =
