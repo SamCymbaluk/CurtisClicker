@@ -1,6 +1,7 @@
 module Update exposing (..)
 
 import Models exposing (Model)
+import CodeEffect
 import Storage
 import Types exposing (..)
 import Msgs exposing (Msg)
@@ -38,15 +39,18 @@ update msg model =
           upgradeAccordion model state
 
 tick : Model -> Time -> Time -> (Model, Cmd Msg)
-tick model interval time =
-  case model.lastTick of
-    0 ->
-      ({ model | lastTick = time }, Storage.loadModel "IshouldntNeedThisStringElm")
-    _ ->
-      ({ model |
-        loc_counter = model.loc_counter + (Models.totalEarnings model (time - model.lastTick))
-        , lastTick = time
-        }, Cmd.none)
+tick m interval time =
+  let
+    model = CodeEffect.tickCodeEffect m interval
+  in
+    case model.lastTick of
+      0 ->
+        ({ model | lastTick = time }, Storage.loadModel "IshouldntNeedThisStringElm")
+      _ ->
+        ({ model |
+          loc_counter = model.loc_counter + (Models.totalEarnings model (time - model.lastTick))
+          , lastTick = time
+          }, Cmd.none)
 
 animTick : Model -> Float -> (Model, Cmd Msg)
 animTick model diff =
@@ -75,8 +79,9 @@ mousePos model pos =
     ({ model | gui = newGui }, Cmd.none)
 
 click : Model -> (Model, Cmd Msg)
-click model =
+click m =
   let
+    model = CodeEffect.onClick m
     earnings = Models.formattedLoc model.clickEarnings
     foldFn (_, _, q, _) b = q + b
     effectAmt = List.foldr (foldFn) 0 earnings

@@ -8,7 +8,6 @@ const path = require('path');
 //Beginner code for an Elm app so that the first LoC are "basic"
 const initialCode=
 `module CurtisClicker exposing (..)
-\\c -> c1
 {-
 Title: CurtisClicker
 Author: Sam Cymbaluk
@@ -70,6 +69,10 @@ fs.readdir("src", (err, files) => {
   codeList = codeList.map(line => escapeRegExp(line));
   //Add quotes and remove EOL "\r"
   codeList = codeList.map(line => "\"" + line.slice(0,-1) + "\"");
+
+  if (codeList.length > 500) { //TODO figure out why more that 500 loc breaks webpack
+    codeList = codeList.splice(0, 500);
+  }
 
   let outputText =
 `module BackgroundCode exposing (..)

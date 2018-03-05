@@ -6,13 +6,14 @@ import Html.Attributes exposing (..)
 import Time exposing (Time, second)
 import Models exposing (Model)
 import Msgs exposing (Msg)
-import BackgroundCode
+import CodeEffect
 import Shop
 import Clickers
 import Upgrades
 import Effects
 import Types exposing (..)
 import Styles exposing (..)
+import Util exposing (formatCode)
 
 import FormatNumber exposing (format)
 import FormatNumber.Locales exposing (usLocale)
@@ -23,8 +24,6 @@ import Bootstrap.Grid.Col as Col
 import Bootstrap.Accordion as Accordion
 import Bootstrap.Card as Card
 import Bootstrap.Button as Button
-
-import SyntaxHighlight exposing (useTheme, oneDark, gitHub, elm, toBlockHtml)
 
 view : Model -> Html Msg
 view model =
@@ -45,20 +44,11 @@ view model =
       , earningsPanel model
       ] ++ (Effects.drawEffects model.gui.effects))
 
-formatCode : String -> Html Msg
-formatCode codeText =
-  div [style [("user-select", "none")]]
-    [ useTheme oneDark
-    , elm codeText
-        |> Result.map (toBlockHtml (Just 1))
-        |> Result.withDefault
-            (code [] [ text codeText ])
-    ]
-
 centerDiv : Model -> Html Msg
 centerDiv model =
   div [style [("overflow-y", "hidden")]]
-      [ curtisDiv model
+      [ CodeEffect.codeDiv model
+      , curtisDiv model
       , div [style locRateDiv] [p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]]
       , div [style clickEarningsDiv] [p [style clickEarningsText] [text ((format usLocale model.clickEarnings) ++ " LoC/click")]]
       ]
