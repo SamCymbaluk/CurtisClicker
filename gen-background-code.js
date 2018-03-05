@@ -5,53 +5,7 @@ that can be used by Elm
 const fs = require('fs');
 const path = require('path');
 
-//Beginner code for an Elm app so that the first LoC are "basic"
-const initialCode=
-`module CurtisClicker exposing (..)
-{-
-Title: CurtisClicker
-Author: Sam Cymbaluk
-Created for: CS1XA3 at McMaster
--}
-
-import Html exposing (..)
-import Html.App as Html
-
--- MODEL
-type alias Model =
-  { value : Int
-  }
-
-model : Model
-model =
-  { value = 0
-  }
-
--- UPDATE
-type Msg
-  = NoOp
-
-update: Msg -> Model -> Model
-update msg model =
-  case msg of
-    NoOp ->
-      model
-
--- VIEW
-view : Model -> Html Msg
-view model =
-  p [] [ text <| toString model.value ]
-
--- APP
-main =
-  Html.beginnerProgram
-    { model = model
-    , view = view
-    , update = update
-    }
-`
-
-let codeList = initialCode.split('\n')
+let codeList = [];
 
 fs.readdir("src", (err, files) => {
   if(err) {
@@ -59,8 +13,12 @@ fs.readdir("src", (err, files) => {
       return;
   }
 
+  //Put Main.elm in first
+  const contents = fs.readFileSync(path.join("src", "Main.elm"), 'utf8');
+  codeList.push(...contents.split('\n'));
+
   files.forEach((file, index) => {
-    if (file !== "BackgroundCode.elm" && file.endsWith(".elm")) {
+    if (file !== "BackgroundCode.elm" && file !== "Main.elm" && file.endsWith(".elm")) {
       const contents = fs.readFileSync(path.join("src", file), 'utf8');
       codeList.push(...contents.split('\n'));
     }
@@ -70,14 +28,10 @@ fs.readdir("src", (err, files) => {
   //Add quotes and remove EOL "\r"
   codeList = codeList.map(line => "\"" + line.slice(0,-1) + "\"");
 
-  if (codeList.length > 500) { //TODO figure out why more that 500 loc breaks webpack
-    codeList = codeList.splice(0, 500);
-  }
-
   let outputText =
 `module BackgroundCode exposing (..)
 code : List String
-code = [${codeList.join(',')}]`
+code = ${formatCodeList(codeList)}`
 
   fs.writeFile("src/BackgroundCode.elm", outputText, (err) => {
     if(err) {
@@ -86,6 +40,20 @@ code = [${codeList.join(',')}]`
     console.log(`Success! ${codeList.length} lines of code written to BackgroundCode.elm`);
   });
 });
+
+//Needed as a workaround to https://github.com/elm-lang/elm-compiler/issues/1521
+function formatCodeList(codeList) {
+  let codeStr = "[";
+  for (let i = 0; i < codeList.length; i += 200) {
+    const endIndex = i + 200 >= codeList.length ? codeList.length - 1 : i + 200;
+
+    codeStr += codeList.slice(i, endIndex);
+    codeStr += "]++[";
+  }
+  codeStr += "]";
+
+  return codeStr;
+}
 
 function escapeRegExp(text) {
   //Escape quotes and backslashes

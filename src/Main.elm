@@ -11,6 +11,12 @@ import Bootstrap.Accordion as Accordion
 import AnimationFrame as Anim
 import Mouse
 
+---------------------------------------
+-- CurtisClicker                     --
+-- Author: Sam Cymbaluk              --
+-- Created for: CS 1XA3 at McMaseter --
+---------------------------------------
+
 tickRate : Time
 tickRate = second / 30
 

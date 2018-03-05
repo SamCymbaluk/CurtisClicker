@@ -22,7 +22,7 @@ type alias Model =
     , effects : List EffectObject
     , mousePos : { x : Int, y : Int }
     , lastClick : Time
-    , bgCodeLines : Float
+    , bgCodePos : Float
     , bgCodeIndex : Int
     }
   }
@@ -41,7 +41,7 @@ init =
      , effects = []
      , mousePos = { x = 0, y = 0 }
      , lastClick = 0
-     , bgCodeLines = 0.0
+     , bgCodePos = 0.0
      , bgCodeIndex = 0
      }
   }, Cmd.none)

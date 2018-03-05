@@ -8,54 +8,61 @@ import Html.Attributes exposing (..)
 import Msgs exposing (Msg)
 import Util exposing (formatCode)
 
+lineHeight : Float
+lineHeight = 20
+
+totalLines : Int
+totalLines = 35
+
 tickCodeEffect : Model -> Time -> Model
 tickCodeEffect model diff =
-  let
-    oldGui = model.gui
-    newBgCodeLines =
-      if (oldGui.bgCodeLines + (locSpeed model diff)) > 20
-        then 20
-        else oldGui.bgCodeLines + (locSpeed model diff)
-    newBgCodeIndex =
-      if (toFloat oldGui.bgCodeIndex + (locSpeed model diff)) > toFloat ((List.length BackgroundCode.code) - 20)
-        then (List.length BackgroundCode.code) - 20
-        else round (oldGui.bgCodeLines + (locSpeed model diff))
-    newGui = {oldGui | bgCodeLines = newBgCodeLines, bgCodeIndex = newBgCodeIndex }
-  in
-    { model | gui = newGui }
+  codeEffect model (locSpeed model diff)
 
 onClick : Model -> Model
-onClick model =
+onClick model = codeEffect model lineHeight
+
+
+codeEffect : Model -> Float -> Model
+codeEffect model movement =
   let
     oldGui = model.gui
-    newBgCodeLines =
-      if (oldGui.bgCodeLines + 1) > 20
-        then 20
-        else oldGui.bgCodeLines + 1
-    newBgCodeIndex =
-      if (oldGui.bgCodeIndex + 1) > (List.length BackgroundCode.code) - 20
-        then (List.length BackgroundCode.code) - 20
-        else  round (oldGui.bgCodeLines + 1)
-    newGui = {oldGui | bgCodeLines = newBgCodeLines, bgCodeIndex = newBgCodeIndex }
+    absPos = oldGui.bgCodePos + movement
+    dIndex = floor (absPos / lineHeight)
+    finalPos = absPos - ((toFloat dIndex) * lineHeight)
+    finalIndex = rem (oldGui.bgCodeIndex + dIndex) (List.length BackgroundCode.code - totalLines)
+    newGui = { oldGui | bgCodePos = finalPos, bgCodeIndex = finalIndex }
   in
-    { model | gui = newGui }
+    {model | gui = newGui }
 
 codeDiv : Model -> Html Msg
 codeDiv model =
   let
     lines = BackgroundCode.code
       |> List.drop model.gui.bgCodeIndex
-      |> List.take (round model.gui.bgCodeLines)
+      |> List.take totalLines
       |> String.join "\n"
   in
     div
-      [style [("position", "absolute"), ("left", "0px"), ("top", "0px")]]
+      [style (("top", "-" ++ toString (model.gui.bgCodePos) ++ "px")::codeDivStyle)]
       [formatCode lines]
 
+codeDivStyle : List (String, String)
+codeDivStyle =
+  [ ("position", "absolute")
+  , ("left", "0px")
+  , ("-webkit-filter", "blur(2px)")
+  , ("-moz-filter", "blur(2px)")
+  , ("-o-filter", "blur(2px)")
+  , ("-ms-filter", "blur(2px)")
+  , ("filter", "blur(2px)")
+  ]
 
 locSpeed : Model -> Time -> Float
 locSpeed model diff =
   let
     earnings = Models.totalEarnings model diff
   in
-    (2 * (logBase 2 ((earnings + 5000) / 5000))) / (second / diff)
+    if earnings >= 0 then
+      1 + (100 * (logBase 2 ((earnings + 2500) / 2500))) * (diff / second)
+    else
+      0
