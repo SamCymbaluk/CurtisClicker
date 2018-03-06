@@ -12,7 +12,7 @@ lineHeight : Float
 lineHeight = 20
 
 totalLines : Int
-totalLines = 35
+totalLines = 45
 
 tickCodeEffect : Model -> Time -> Model
 tickCodeEffect model diff =
@@ -43,13 +43,12 @@ codeDiv model =
       |> String.join "\n"
   in
     div
-      [style (("top", "-" ++ toString (model.gui.bgCodePos) ++ "px")::codeDivStyle)]
+      [style (("margin-top", "-" ++ toString (model.gui.bgCodePos) ++ "px")::codeDivStyle)]
       [formatCode lines]
 
 codeDivStyle : List (String, String)
 codeDivStyle =
-  [ ("position", "absolute")
-  , ("left", "0px")
+  [ ("width", "100%")
   , ("-webkit-filter", "blur(2px)")
   , ("-moz-filter", "blur(2px)")
   , ("-o-filter", "blur(2px)")
@@ -62,7 +61,7 @@ locSpeed model diff =
   let
     earnings = Models.totalEarnings model diff
   in
-    if earnings >= 0 then
-      1 + (100 * (logBase 2 ((earnings + 2500) / 2500))) * (diff / second)
+    if earnings > 0 then
+      0.2 + (100 * (logBase 2 ((earnings + 2500) / 2500))) * (diff / second)
     else
       0

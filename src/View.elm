@@ -46,7 +46,7 @@ view model =
 
 centerDiv : Model -> Html Msg
 centerDiv model =
-  div [style [("overflow-y", "hidden")]]
+  div [style centerDivStyle]
       [ CodeEffect.codeDiv model
       , curtisDiv model
       , div [style locRateDiv] [p [style locRateText] [text ((format usLocale (Models.totalEarnings model second)) ++ " LoC/s")]]
@@ -94,7 +94,7 @@ earningCol : Model -> (String, String, Int, String) -> Grid.Column Msg
 earningCol model (title, titles, amt, image) =
   Grid.col [Col.xs1, Col.attrs [style earningColumn]]
     [ div []
-        [ img [src ("img/earning_icons/" ++ image ++ ".png"), width 50, height 50, style earningIcon] []
+        [ img [src ("img/" ++ image ++ ".png"), width 50, height 50, style earningIcon] []
         , div []
             [p [style earningText] [text (toString (amt))]]
         ]

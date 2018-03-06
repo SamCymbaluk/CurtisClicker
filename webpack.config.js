@@ -39,6 +39,15 @@ module.exports = {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'file-loader',
       },
+      {
+        test: /\.(png|jp(e*)g|svg)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: 'img/[name].[ext]'
+          }
+        }]
+        }
     ],
 
     noParse: /\.elm$/,

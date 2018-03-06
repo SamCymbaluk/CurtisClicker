@@ -39,22 +39,20 @@ update msg model =
           upgradeAccordion model state
 
 tick : Model -> Time -> Time -> (Model, Cmd Msg)
-tick m interval time =
-  let
-    model = CodeEffect.tickCodeEffect m interval
-  in
-    case model.lastTick of
-      0 ->
-        ({ model | lastTick = time }, Storage.loadModel "IshouldntNeedThisStringElm")
-      _ ->
-        ({ model |
-          loc_counter = model.loc_counter + (Models.totalEarnings model (time - model.lastTick))
-          , lastTick = time
-          }, Cmd.none)
+tick model interval time =
+  case model.lastTick of
+    0 ->
+      ({ model | lastTick = time }, Storage.loadModel "IshouldntNeedThisStringElm")
+    _ ->
+      ({ model |
+        loc_counter = model.loc_counter + (Models.totalEarnings model (time - model.lastTick))
+        , lastTick = time
+        }, Cmd.none)
 
 animTick : Model -> Float -> (Model, Cmd Msg)
-animTick model diff =
+animTick m diff =
   let
+    model = CodeEffect.tickCodeEffect m diff
     oldGui = model.gui
     newGui =
       { oldGui
@@ -142,7 +140,7 @@ createClickEffects model vels =
     toEffect vel (_, _, _, img) =
       { x = toFloat model.gui.mousePos.x
       , y = toFloat model.gui.mousePos.y
-      , img = "img/earning_icons/" ++ img ++ ".png"
+      , img = "img/" ++ img ++ ".png"
       , vel = vel
       , acc = (0, 0.02)
       , ticksToLive = 200

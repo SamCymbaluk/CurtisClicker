@@ -6,6 +6,10 @@ require('font-awesome/css/font-awesome.css');
 // Require index.html so it gets copied to dist
 require('./index.html');
 
+// Webpack is weeiird
+function requireAll(r) { r.keys().forEach(r); }
+requireAll(require.context('../img/', true));
+
 var Elm = require('./Main.elm');
 var mountNode = document.getElementById('main');
 

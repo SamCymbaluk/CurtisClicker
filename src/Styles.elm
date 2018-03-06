@@ -47,6 +47,11 @@ sideTitleText =
 
 {- Center -}
 
+centerDivStyle =
+  [ ("height", "100%")
+  , ("overflow-y", "hidden")
+  ]
+
 curtisImg =
   [ ("position", "fixed")
   , ("left", "50vw")
