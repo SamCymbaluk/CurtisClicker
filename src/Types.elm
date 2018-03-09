@@ -6,20 +6,28 @@ type Upgrade =
   Ubuntu
   | Emacs
   | Coffee
+  | Deadlines
+  | Tenure
+  | UnethicalStudies
 
 upgradeList : List Upgrade
 upgradeList = [
   Ubuntu
   , Emacs
   , Coffee
+  , Deadlines
+  , Tenure
+  , UnethicalStudies
   ]
 
 type Clicker =
   Macro
   | BashScript
+  | SOScraper
   | UndergradStudent
   | GradStudent
   | Professor
+  | Startup
   | ResearchTeam
   | AGI
 
@@ -27,9 +35,11 @@ clickerList : List Clicker
 clickerList = [
   Macro
   , BashScript
+  , SOScraper
   , UndergradStudent
   , GradStudent
   , Professor
+  , Startup
   , ResearchTeam
   , AGI
   ]

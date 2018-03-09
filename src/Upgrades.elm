@@ -2,6 +2,7 @@ module Upgrades exposing (..)
 
 import Types exposing (..)
 import Models exposing (..)
+import Time exposing (Time, second)
 
 -- Serialize Upgrades
 toInt : Upgrade -> Int
@@ -9,6 +10,9 @@ toInt u = case u of
   Ubuntu -> 0
   Emacs -> 1
   Coffee -> 2
+  Deadlines -> 3
+  Tenure -> 4
+  UnethicalStudies -> 5
 
 -- Deserialize upgrades
 fromInt : Int -> Maybe Upgrade
@@ -16,6 +20,9 @@ fromInt i = case i of
   0 -> Just Ubuntu
   1 -> Just Emacs
   2 -> Just Coffee
+  3 -> Just Deadlines
+  4 -> Just Tenure
+  5 -> Just UnethicalStudies
   _ -> Nothing
 
 modifiers : Upgrade -> (List Clicker, Float, Float)
@@ -26,6 +33,12 @@ modifiers upgrade = case upgrade of
     (clickerList, 0.5, 2.0)
   Coffee ->
     ([UndergradStudent, GradStudent, Professor], 0.25, 1.0)
+  Deadlines ->
+    ([UndergradStudent, GradStudent], 0.25, 25.0)
+  Tenure ->
+    ([Professor], 1.0, 1.0)
+  UnethicalStudies ->
+    ([ResearchTeam], 1.0, 1.0)
 
 unlocked : Model -> Upgrade -> Bool
 unlocked model upgrade = True{-case upgrade of
@@ -44,6 +57,13 @@ name upgrade = case upgrade of
     "Switch to Emacs"
   Coffee ->
     "Coffee Machine"
+  Deadlines ->
+    "Fast-approaching Deadlines"
+  Tenure ->
+    "Open Tenure Position"
+  UnethicalStudies ->
+    "Unethical research"
+
 
 cost : Upgrade -> Int
 cost upgrade = case upgrade of
@@ -52,7 +72,13 @@ cost upgrade = case upgrade of
   Emacs ->
     500
   Coffee ->
-    2000
+    5000
+  Deadlines ->
+    75000
+  Tenure ->
+    1800000
+  UnethicalStudies ->
+    100000000
 
 description : Upgrade -> String
 description upgrade = case upgrade of
@@ -65,6 +91,12 @@ description upgrade = case upgrade of
   Coffee ->
     "A programmer is just an organism that\n"
     ++ "converts coffee into code"
+  Deadlines ->
+    "Due tomorrow? Do tomorrow."
+  Tenure ->
+    ""
+  UnethicalStudies ->
+    "AI Safety? What's that?"
 
 clickerAmount : Model -> Clicker -> Int
 clickerAmount model clicker =

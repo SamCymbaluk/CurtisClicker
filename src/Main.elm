@@ -14,7 +14,7 @@ import Mouse
 ---------------------------------------
 -- CurtisClicker                     --
 -- Author: Sam Cymbaluk              --
--- Created for: CS 1XA3 at McMaseter --
+-- Created for: CS 1XA3 at McMaster  --
 ---------------------------------------
 
 tickRate : Time

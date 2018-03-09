@@ -25,6 +25,8 @@ toInt c = case c of
   Professor -> 4
   ResearchTeam -> 5
   AGI -> 6
+  SOScraper -> 7
+  Startup -> 8
 
 -- Deserialize clickers
 fromInt : Int -> Maybe Clicker
@@ -36,6 +38,8 @@ fromInt i = case i of
   4 -> Just Professor
   5 -> Just ResearchTeam
   6 -> Just AGI
+  7 -> Just SOScraper
+  8 -> Just Startup
   _ -> Nothing
 
 {-| Returns the friendly name of a Clicker.
@@ -50,12 +54,16 @@ name clicker plural =
             "Macro"
           BashScript ->
             "Bash Script"
+          SOScraper ->
+            "Stackoverflow Scraper"
           UndergradStudent ->
             "Undergrad Student"
           GradStudent ->
             "Grad Student"
           Professor ->
             "Professor"
+          Startup ->
+            "Tech Startup"
           ResearchTeam ->
             "Research Team"
           AGI ->
@@ -71,14 +79,20 @@ description clicker =
     Macro ->
       "Keep everything under CTRL"
     BashScript ->
-      "'Automating' comes from the roots 'auto-' meaning\n"
-      ++ "'self-', and 'mating', meaning 'screwing'. ~xkcd"
+      "'Automating' comes from the roots\n"
+      ++ "'auto-' meaning 'self-', and\n"
+      ++ "'mating', meaning 'screwing'. ~xkcd"
+    SOScraper ->
+      "The creation of Stackoverflow is\n"
+      ++ "the original bootstrap paradox"
     UndergradStudent ->
       "Code quality not guaranteed"
     GradStudent ->
       "Grad Student"
     Professor ->
       "Professor"
+    Startup ->
+      "Something something Deep Learning Blockchain"
     ResearchTeam ->
       "Research Team"
     AGI ->
@@ -97,16 +111,20 @@ cost clicker amt =
         defaultInc 50 amt
       BashScript ->
         defaultInc 500 amt
-      UndergradStudent ->
+      SOScraper ->
         defaultInc 3000 amt
+      UndergradStudent ->
+        defaultInc 10000 amt
       GradStudent ->
-        defaultInc 20000 amt
+        defaultInc 70000 amt
       Professor ->
-        defaultInc 200000 amt
+        defaultInc 700000 amt
+      Startup ->
+        defaultInc 10000000 amt
       ResearchTeam ->
-        defaultInc 5000000 amt
+        defaultInc 30000000 amt
       AGI ->
-        defaultInc (100^5) amt
+        100^5
 
 {-| Returns the base loc earnings per second for a Clicker
 -}
@@ -116,13 +134,17 @@ earnings clicker = case clicker of
     0.5
   BashScript ->
     5.0
-  UndergradStudent ->
+  SOScraper ->
     20.0
-  GradStudent ->
+  UndergradStudent ->
     50.0
+  GradStudent ->
+    250.0
   Professor ->
     1000.0
+  Startup ->
+    8000.0
   ResearchTeam ->
-    25000.0
+    20000.0
   AGI ->
     50000000.0

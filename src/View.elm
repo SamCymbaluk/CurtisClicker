@@ -78,7 +78,7 @@ curtisDiv model =
         , draggable "false"
         , id "curtis"
         , style curtisImg
-        , class "hvr-grow"--(if model.lastTick - model.gui.lastClick > second * 0.05 then "hvr-grow" else "hvr-shrink")
+        , class "hvr-grow"
         , onClick Msgs.Click] []
 
 earningsPanel : Model -> Html Msg
