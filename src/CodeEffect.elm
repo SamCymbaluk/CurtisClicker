@@ -8,20 +8,23 @@ import Html.Attributes exposing (..)
 import Msgs exposing (Msg)
 import Util exposing (formatCode)
 
+-- Font size + padding = 20
 lineHeight : Float
 lineHeight = 20
 
 totalLines : Int
 totalLines = 45
 
+{-| Applies time based code effect -}
 tickCodeEffect : Model -> Time -> Model
 tickCodeEffect model diff =
   codeEffect model (locSpeed model diff)
 
+{-| Applies clicked based code effect -}
 onClick : Model -> Model
 onClick model = codeEffect model lineHeight
 
-
+{-| Applies movement to codeEffect -}
 codeEffect : Model -> Float -> Model
 codeEffect model movement =
   let
@@ -34,6 +37,8 @@ codeEffect model movement =
   in
     {model | gui = newGui }
 
+{-| The Html element of the codeEffect with
+the correct code lines and positioning -}
 codeDiv : Model -> Html Msg
 codeDiv model =
   let
@@ -56,6 +61,8 @@ codeDivStyle =
   , ("filter", "blur(2px)")
   ]
 
+{-| Converts LoC earnings to speed code "falls"
+Uses log to prevent insane earnings from breaking everything -}
 locSpeed : Model -> Time -> Float
 locSpeed model diff =
   let

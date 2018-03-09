@@ -6,12 +6,17 @@ import Upgrades
 import Types exposing (..)
 import Maybe.Extra
 
+-- Save model to local storage
 port saveModel : SerializedModel -> Cmd msg
 
+-- Request model from local storage (string is useless and unused but necessary to compile)
 port loadModel : String -> Cmd msg
 
+-- Accept model from JavaScript
 port loadModelRes : (Maybe SerializedModel -> msg) -> Sub msg
 
+{-| Takes data (i.e. not gui) portion of Model and
+converts to serializable types when necessary -}
 serializeModel : Model -> SerializedModel
 serializeModel model =
   { loc_counter = model.loc_counter
@@ -22,6 +27,7 @@ serializeModel model =
   , active_upgrades = serializeUpgrades model.active_upgrades
   }
 
+{-| Intecects SerializedModel with initial model -}
 deserializeModel : Maybe SerializedModel -> Model
 deserializeModel serializedModel =
   let

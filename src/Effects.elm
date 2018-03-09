@@ -18,6 +18,8 @@ type alias EffectObject =
   , width : Int
   }
 
+{-| Applies time-based effects to a list of EffectObjects
+List size will decrease as effects expire-}
 tickEffects : List EffectObject -> Time -> List EffectObject
 tickEffects effects interval =
   Maybe.Extra.values (List.map (tickEffect interval) effects)
@@ -31,9 +33,9 @@ tickEffect interval effect =
       (vel_x, vel_y) = effect.vel
       (acc_x, acc_y) = effect.acc
     in
-      Just { effect | x = effect.x + vel_x * interval
-           , y = effect.y + vel_y * interval
-           , vel = (vel_x + acc_x, vel_y + acc_y)
+      Just { effect | x = effect.x + vel_x * interval -- Movement x
+           , y = effect.y + vel_y * interval          -- Movement y
+           , vel = (vel_x + acc_x, vel_y + acc_y)     -- Acceleration
            , ticksToLive = effect.ticksToLive - 1 }
 
 shouldDie : EffectObject -> Bool
@@ -45,6 +47,7 @@ shouldDie effect =
 drawEffects : List EffectObject -> List (Html Msg)
 drawEffects effects = List.map drawEffect effects
 
+{-| Creates a Html element from an EffectObject -}
 drawEffect : EffectObject -> Html Msg
 drawEffect effect =
   img
@@ -52,15 +55,16 @@ drawEffect effect =
     , width effect.width
     , height effect.height
     , style
-      [ ("position", "fixed") --("position", "absolute")
+      [ ("position", "fixed")
       , ("top", toString ((round effect.y) - (effect.height // 2)) ++ "px")
       , ("left", toString ((round effect.x) - (effect.width // 2)) ++ "px")
       , ("z-index", "0")
-      , ("pointer-events", "none")
+      , ("pointer-events", "none") --Prevents the effect from blocking clicks
       ]
     ]
     []
 
+{-| Generator for velocity pairs -}
 generateVels : Int -> Random.Generator (List (Float, Float))
 generateVels amt =
   Random.list amt

@@ -8,6 +8,7 @@ import Msgs exposing (Msg)
 import Time exposing (Time, second)
 import Effects exposing (EffectObject)
 import Bootstrap.Accordion as Accordion
+import Bootstrap.Modal as Modal
 import Shop
 import Random
 import Mouse
@@ -17,31 +18,40 @@ update msg model =
     case msg of
         Msgs.None ->
           (model, Cmd.none)
+
+        {- Time subscriptions -}
         Msgs.Tick interval time ->
           tick model interval time
         Msgs.AnimTick diff ->
           animTick model diff
         Msgs.SaveInterval interval time ->
           saveInterval model interval time
+
         Msgs.ApplyModel sModel ->
           applyModel model sModel
         Msgs.MousePos pos ->
           mousePos model pos
         Msgs.Click ->
           click model
-        Msgs.ClickEffects vels ->
-          clickEffects model vels
         Msgs.Purchase item ->
           purchase model item
+
+        {- Gui/Effects -}
+        Msgs.ClickEffects vels ->
+          clickEffects model vels
         Msgs.ClickerAccordion state ->
           clickerAccordion model state
         Msgs.UpgradeAccordion state ->
           upgradeAccordion model state
+        Msgs.ShowIntroModal ->
+          showIntroModal model
+        Msgs.CloseIntroModal ->
+          closeIntroModal model
 
 tick : Model -> Time -> Time -> (Model, Cmd Msg)
 tick model interval time =
   case model.lastTick of
-    0 ->
+    0 -> -- First tick => Request modal from local storage
       ({ model | lastTick = time }, Storage.loadModel "IshouldntNeedThisStringElm")
     _ ->
       ({ model |
@@ -50,15 +60,15 @@ tick model interval time =
         }, Cmd.none)
 
 animTick : Model -> Float -> (Model, Cmd Msg)
-animTick m diff =
+animTick model diff =
   let
-    model = CodeEffect.tickCodeEffect m diff
-    oldGui = model.gui
+    newModel = CodeEffect.tickCodeEffect model diff
+    oldGui = newModel.gui
     newGui =
       { oldGui
         | effects = Effects.tickEffects oldGui.effects diff }
   in
-    ({ model | gui = newGui }, Cmd.none)
+    ({ newModel | gui = newGui }, Cmd.none)
 
 saveInterval : Model -> Time -> Time -> (Model, Cmd Msg)
 saveInterval model interval time =
@@ -77,16 +87,17 @@ mousePos model pos =
     ({ model | gui = newGui }, Cmd.none)
 
 click : Model -> (Model, Cmd Msg)
-click m =
+click model =
   let
-    model = CodeEffect.onClick m
-    earnings = Models.formattedLoc model.clickEarnings
+    newModel = CodeEffect.onClick model
+    earnings = Models.formattedLoc newModel.clickEarnings
     foldFn (_, _, q, _) b = q + b
     effectAmt = List.foldr (foldFn) 0 earnings
-    oldGui = model.gui
+    oldGui = newModel.gui
     newGui = {oldGui | lastClick = model.lastTick}
   in
-    ({ model | loc_counter = model.loc_counter + model.clickEarnings
+    ({ newModel | loc_counter = newModel.loc_counter
+                                + newModel.clickEarnings
              , gui = newGui }
      , Random.generate Msgs.ClickEffects (Effects.generateVels effectAmt))
 
@@ -115,6 +126,22 @@ upgradeAccordion model state =
   let
     oldGui = model.gui
     newGui = {oldGui | upgradeAccordion = state}
+  in
+    ({ model | gui = newGui }, Cmd.none)
+
+closeIntroModal : Model -> (Model, Cmd Msg)
+closeIntroModal model =
+  let
+    oldGui = model.gui
+    newGui = {oldGui | introModalVis = Modal.hidden}
+  in
+    ({ model | gui = newGui }, Cmd.none)
+
+showIntroModal : Model -> (Model, Cmd Msg)
+showIntroModal model =
+  let
+    oldGui = model.gui
+    newGui = {oldGui | introModalVis = Modal.hidden}
   in
     ({ model | gui = newGui }, Cmd.none)
 

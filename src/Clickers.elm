@@ -3,6 +3,8 @@ module Clickers exposing (..)
 import List exposing (map)
 import Types exposing (..)
 
+{-| Creates the initial data for clickers
+to be used in the Model -}
 init : List ClickerData
 init = map (\c -> (c, 0, 1.0)) clickerList
 

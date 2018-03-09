@@ -23,9 +23,3 @@ app.ports.saveModel.subscribe(function(model) {
 app.ports.loadModel.subscribe(function() {
   app.ports.loadModelRes.send(JSON.parse(localStorage.getItem('elm-model')));
 });
-
-/*setTimeout(() => {
-  document.getElementById("curtis").addEventListener("click", () => {
-    alert("Test");
-  });
-}, 50);*/

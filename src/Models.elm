@@ -6,6 +6,7 @@ import Clickers exposing (earnings)
 import Types exposing (Clicker, Upgrade, ClickerData)
 import Time exposing (Time)
 import Bootstrap.Accordion as Accordion
+import Bootstrap.Modal as Modal
 import Time exposing (Time, second)
 import Effects exposing (EffectObject)
 
@@ -19,6 +20,7 @@ type alias Model =
   , gui :
     { clickerAccordion : Accordion.State
     , upgradeAccordion : Accordion.State
+    , introModalVis : Modal.Visibility
     , effects : List EffectObject
     , mousePos : { x : Int, y : Int }
     , lastClick : Time
@@ -38,6 +40,7 @@ init =
    , gui =
      { clickerAccordion = Accordion.initialState
      , upgradeAccordion = Accordion.initialState
+     , introModalVis = Modal.hidden
      , effects = []
      , mousePos = { x = 0, y = 0 }
      , lastClick = 0
@@ -73,8 +76,12 @@ clickerEarnings model clicker =
 
 totalEarnings : Model -> Time -> Float
 totalEarnings model interval = List.sum
+  -- Doesn't use clickerEarnings, as that would do a number of unnecessary searches of model.clickers
   (List.map (\(c, q, m) -> (earnings c) * m * (toFloat q) * (interval / Time.second)) model.clickers)
 
+{-| Formats a raw line of code float as an combination of integer quantities larger denominations
+Returned data includes denomination names and image paths
+-}
 formattedLoc : Float -> List (String, String, Int, String)
 formattedLoc l =
   let
@@ -88,6 +95,8 @@ formattedLoc l =
     , ("Turing Award", "Turing Awards",             (locs // 100^5)      , "turing_award")
     ]
 
+{-| Formats a raw line of code float as the largest denomination such that
+there is at least one of that denomination -}
 reducedLocFormat : Float -> (Float, String)
 reducedLocFormat locs =
   let
@@ -108,6 +117,6 @@ reducedLocFormat locs =
         (locs / (toFloat m), if isSingular (locs / (toFloat m)) then t else ts)
     isSingular float = (abs (float - 1)) < 0.001
   in
-    List.filter (listFilter locs) values
+    List.filter (listFilter locs) values --Drop any < 1 denomination representations
      |> List.head
      |> calcValue

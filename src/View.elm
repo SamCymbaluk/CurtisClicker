@@ -23,6 +23,7 @@ import Bootstrap.Grid.Row as Row
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Accordion as Accordion
 import Bootstrap.Card as Card
+import Bootstrap.Card.Block as Block
 import Bootstrap.Button as Button
 
 view : Model -> Html Msg
@@ -141,7 +142,7 @@ clickerCard model (c, q, m) =
               [ clickerPurchaseButton model (c, q, m) ]
     , blocks =
       [ Accordion.block []
-        [ Card.text []
+        [ Block.text []
           [ formatCode <|
             "{- " ++ (Clickers.description c) ++ " -}\n" ++
             "cost = (" ++ (toString cost) ++ ", \"" ++ costType ++ "\")\n" ++
@@ -191,7 +192,7 @@ upgradeCard model upgrade =
             ])
       , blocks =
         [ Accordion.block []
-          [ Card.text []
+          [ Block.text []
             [ formatCode <|
               "{- " ++ (Upgrades.description upgrade) ++ " -}\n" ++
               "cost = (" ++ (toString cost) ++ ", \"" ++ costType ++ "\")\n\n" ++

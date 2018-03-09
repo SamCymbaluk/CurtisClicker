@@ -17,6 +17,7 @@ import Mouse
 -- Created for: CS 1XA3 at McMaster  --
 ---------------------------------------
 
+-- FPS: 30
 tickRate : Time
 tickRate = second / 30
 

@@ -18,3 +18,5 @@ type Msg =
   | Purchase ShopItem
   | ClickerAccordion Accordion.State
   | UpgradeAccordion Accordion.State
+  | CloseIntroModal
+  | ShowIntroModal

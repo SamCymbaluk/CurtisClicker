@@ -25,6 +25,9 @@ fromInt i = case i of
   5 -> Just UnethicalStudies
   _ -> Nothing
 
+{-|
+Returns (affectedClickers, modifier, clickMultiplier)
+-}
 modifiers : Upgrade -> (List Clicker, Float, Float)
 modifiers upgrade = case upgrade of
   Ubuntu ->
@@ -41,13 +44,19 @@ modifiers upgrade = case upgrade of
     ([ResearchTeam], 1.0, 1.0)
 
 unlocked : Model -> Upgrade -> Bool
-unlocked model upgrade = True{-case upgrade of
+unlocked model upgrade = case upgrade of
   Ubuntu ->
     True
   Emacs ->
     True
   Coffee ->
-    (clickerAmount model UndergradStudent > 0) || (clickerAmount model GradStudent > 0)-}
+    (clickerAmount model UndergradStudent > 0) || (clickerAmount model GradStudent > 0)
+  Deadlines ->
+    Models.totalEarnings model second >= toFloat 1000
+  Tenure ->
+    clickerAmount model Professor > 0
+  UnethicalStudies ->
+    clickerAmount model ResearchTeam > 0
 
 name : Upgrade -> String
 name upgrade = case upgrade of
@@ -127,4 +136,5 @@ applyModifiers model modifiers = case modifiers of
             entry
     in
       applyModifiers { model | clickers = List.map (updateClicker c multiplier) model.clickers
-                             , clickEarnings = model.clickEarnings * clickMultiplier } (cs, multiplier, 1.0) --Pass clickMultipler of one since we only apply it once
+                             , clickEarnings = model.clickEarnings * clickMultiplier } (cs, multiplier, 1.0)
+                             --Pass clickMultipler of one since we only apply it once

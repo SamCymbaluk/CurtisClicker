@@ -1,7 +1,14 @@
 module Styles exposing (..)
 
-import Html exposing (..)
-
+darkTheme :
+  { background : String
+  , sidebar : String
+  , text : String
+  , text_blue : String
+  , text_orange : String
+  , text_green : String
+  , textbox : String
+  }
 darkTheme =
   { background = "#282C34"
   , sidebar = "#21232b"
@@ -12,12 +19,14 @@ darkTheme =
   , textbox = "#d1d1e0"
   }
 
+gridContainer : List (String, String)
 gridContainer =
    [ ("padding", "0px")
    , ("margin", "0px")
    , ("width", "100vw")
    ]
 
+gridCol : List (String, String)
 gridCol =
   [ ("height", "100vh")
   , ("padding", "0px")
@@ -26,6 +35,7 @@ gridCol =
 
 {- Sidebar -}
 
+sideCol : List (String, String)
 sideCol = gridCol ++
   [ ("border-left", "2px solid black")
   , ("border-right", "2px solid black")
@@ -33,11 +43,13 @@ sideCol = gridCol ++
   , ("overflow-y", "auto")
   ]
 
+sideTitleDiv : List (String, String)
 sideTitleDiv =
   [ ("border-bottom", "2px solid " ++ darkTheme.text)
   , ("margin-top", "1rem")
   ]
 
+sideTitleText : List (String, String)
 sideTitleText =
   [ ("text-align", "center")
   , ("font-family", "Fira Mono")
@@ -47,11 +59,13 @@ sideTitleText =
 
 {- Center -}
 
+centerDivStyle : List (String, String)
 centerDivStyle =
   [ ("height", "100%")
   , ("overflow-y", "hidden")
   ]
 
+curtisImg : List (String, String)
 curtisImg =
   [ ("position", "fixed")
   , ("left", "50vw")
@@ -62,6 +76,7 @@ curtisImg =
   , ("z-index", "10")
   ]
 
+locRateDiv : List (String, String)
 locRateDiv =
   [ ("position", "fixed")
   , ("width", "100%")
@@ -70,6 +85,7 @@ locRateDiv =
   , ("pointer-events", "none")
   ]
 
+locRateText : List (String, String)
 locRateText =
   [ ("margins", "auto")
   , ("text-align", "center")
@@ -78,6 +94,7 @@ locRateText =
   , ("color", darkTheme.text)
   ]
 
+clickEarningsDiv : List (String, String)
 clickEarningsDiv =
   [ ("position", "fixed")
   , ("width", "100%")
@@ -86,6 +103,7 @@ clickEarningsDiv =
   , ("pointer-events", "none")
   ]
 
+clickEarningsText : List (String, String)
 clickEarningsText =
   [ ("margins", "auto")
   , ("text-align", "center")
@@ -96,6 +114,7 @@ clickEarningsText =
 
 {- Earnings panel -}
 
+earningPanelDiv : List (String, String)
 earningPanelDiv =
   [ ("margin", "auto")
   , ("padding", "0px")
@@ -105,18 +124,20 @@ earningPanelDiv =
   , ("pointer-events", "none")
   ]
 
+earningIcon : List (String, String)
 earningIcon =
   [ ("display", "block")
   , ("margin", "0 auto")
   ]
 
+earningColumn : List (String, String)
 earningColumn =
   [ ("padding-top", "15px")
-  , ("background-color", "#2d2f39")--"#4f5164")
+  , ("background-color", "#2d2f39")
   , ("border", "1px solid black")
-  --, ("box-shadow", "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4)")
   ]
 
+earningText : List (String, String)
 earningText =
   [ ("text-align", "center")
   , ("font-family", "Fira Mono")
@@ -127,16 +148,19 @@ earningText =
 
 {- Misc -}
 
+cardHeader : List (String, String)
 cardHeader =
   [ ("background-color", "#2d2f39")
   ]
 
+card : List (String, String)
 card =
   [ ("border", "0")
   , ("background-color", darkTheme.background)
   , ("border-bottom", "1px solid " ++ darkTheme.text)
   ]
 
+codeText : List (String, String)
 codeText =
   [ ("font-family", "Fira Mono")
   , ("font-size", "12px")
@@ -145,6 +169,7 @@ codeText =
   , ("margin-right", "0px")
   ]
 
+purchaseButton : List (String, String)
 purchaseButton =
   [ ("margin-right", "1rem")
   , ("padding", "4px")

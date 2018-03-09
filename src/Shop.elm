@@ -5,6 +5,7 @@ import Clickers exposing (clicker, quantity, multiplier)
 import Upgrades
 import Types exposing (..)
 
+{-| Combines the cost functions of ShopItems -}
 cost : Model -> ShopItem -> Int
 cost model item = case item of
   ClickerItem c ->
@@ -30,22 +31,22 @@ addClicker model clicker =
   in
     {model | clickers = List.map incClicker model.clickers}
 
+{-| Updates model with effects of purchasing a ShopItems
+Does NOT check to see if ShopItem can be afforded. Use canAfford before calling this function -}
 purchase : Model -> ShopItem -> Model
 purchase model item = case item of
   ClickerItem clicker ->
     let
-      incClicker clickerData clicker =
-        List.map (\(c, q, m) -> if c == clicker then (c, q+1, m) else (c, q, m)) model.clickers
+      newModel = addClicker model clicker
     in
-      { model |
+      { newModel |
         loc_counter = model.loc_counter - (toFloat (cost model (ClickerItem clicker))) --Subtract Cost
-      , clickers = incClicker model.clickers clicker --Add 1 to clicker data
       }
   UpgradeItem upgrade ->
     let
-      model_ = Upgrades.applyUpgrade model upgrade
+      newModel = Upgrades.applyUpgrade model upgrade
     in
-      { model_ |
+      { newModel |
         loc_counter = model.loc_counter - (toFloat (cost model (UpgradeItem upgrade))) --Subtract cost
       , remaining_upgrades = List.filter (\u -> not (u == upgrade)) model.remaining_upgrades --Remove from remaining upgrades
       , active_upgrades = model.active_upgrades ++ [upgrade] --Add to active_upgrades
