@@ -25,6 +25,7 @@ import Bootstrap.Accordion as Accordion
 import Bootstrap.Card as Card
 import Bootstrap.Card.Block as Block
 import Bootstrap.Button as Button
+import Bootstrap.Modal as Modal
 
 view : Model -> Html Msg
 view model =
@@ -43,6 +44,7 @@ view model =
             ]
         ]
       , earningsPanel model
+      , introModal model
       ] ++ (Effects.drawEffects model.gui.effects))
 
 centerDiv : Model -> Html Msg
@@ -222,3 +224,39 @@ upgradePurchaseButton model upgrade =
         ]
     ]
     [ text "Purchase" ]
+
+introModal : Model -> Html Msg
+introModal model =
+  Modal.config Msgs.CloseIntroModal
+    |> Modal.large
+    |> Modal.hideOnBackdropClick False
+    |> Modal.h3 [style sideTitleText] [ text "Curtis Clicker" ]
+    |> Modal.body [] [ introModalDiv model ]
+    |> Modal.footer []
+      [ Button.button
+        [ Button.outlinePrimary
+        , Button.attrs [ onClick Msgs.CloseIntroModal ]
+        ]
+        [ text "Let's go!" ]
+      ]
+    |> Modal.view model.gui.introModalVis
+
+introModalDiv : Model -> Html Msg
+introModalDiv model =
+  div [style modalText]
+  [ p [style [("font-size", "16px")]] [text "Meet Curtis:"]
+  , img [src "img/intro-curtis.png", style [("margin","auto"), ("display","block")]] []
+  , p []
+      [
+        text <| "Curtis is a Computer Science student at McMaster with a bright future ahead of him! "
+          ++ "Unfortuately, Curtis sometimes has difficulty staying on task and getting his work done. "
+          ++ "\"Encourage\" him to write code by "
+      , strong [] [text "clicking"]
+      , text <| " on him. "
+          ++ "Once he has written enough code, you can automate the process by purchasing "
+      , strong [] [text "Auto Clickers. "]
+      , text "You can also purchase "
+      , strong [] [text "Upgrades"]
+      , text " which augment your clicks and Auto Clicker earnings."
+      ]
+  ]

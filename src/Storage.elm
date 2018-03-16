@@ -25,6 +25,7 @@ serializeModel model =
   , clickEarnings = model.clickEarnings
   , remaining_upgrades = serializeUpgrades model.remaining_upgrades
   , active_upgrades = serializeUpgrades model.active_upgrades
+  , modalOpened = model.modalOpened
   }
 
 {-| Intecects SerializedModel with initial model -}
@@ -42,6 +43,7 @@ deserializeModel serializedModel =
           , clickEarnings = sModel.clickEarnings
           , remaining_upgrades = deserializeUpgrades sModel.remaining_upgrades
           , active_upgrades = deserializeUpgrades sModel.active_upgrades
+          , modalOpened = sModel.modalOpened
         }
       Nothing ->
         model

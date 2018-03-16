@@ -2,6 +2,7 @@ module Styles exposing (..)
 
 darkTheme :
   { background : String
+  , dark : String
   , sidebar : String
   , text : String
   , text_blue : String
@@ -11,6 +12,7 @@ darkTheme :
   }
 darkTheme =
   { background = "#282C34"
+  , dark = "#2d2f39"
   , sidebar = "#21232b"
   , text = "#ABAEBF"
   , text_blue = "#61AFEF"
@@ -173,4 +175,11 @@ purchaseButton : List (String, String)
 purchaseButton =
   [ ("margin-right", "1rem")
   , ("padding", "4px")
+  ]
+
+modalText : List (String, String)
+modalText =
+  [ ("font-family", "Fira Mono")
+  , ("font-size", "14px")
+  , ("color", darkTheme.text)
   ]

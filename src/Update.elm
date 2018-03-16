@@ -62,7 +62,8 @@ tick model interval time =
 animTick : Model -> Float -> (Model, Cmd Msg)
 animTick model diff =
   let
-    newModel = CodeEffect.tickCodeEffect model diff
+    model2 = CodeEffect.tickCodeEffect model diff
+    newModel = if model2.modalOpened then model2 else (\(m, c) -> m) (update Msgs.ShowIntroModal model2)
     oldGui = newModel.gui
     newGui =
       { oldGui
@@ -141,9 +142,9 @@ showIntroModal : Model -> (Model, Cmd Msg)
 showIntroModal model =
   let
     oldGui = model.gui
-    newGui = {oldGui | introModalVis = Modal.hidden}
+    newGui = {oldGui | introModalVis = Modal.shown}
   in
-    ({ model | gui = newGui }, Cmd.none)
+    ({ model | modalOpened = True, gui = newGui }, Cmd.none)
 
 {-
   Helper functions

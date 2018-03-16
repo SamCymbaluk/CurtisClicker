@@ -17,6 +17,7 @@ type alias Model =
   , clickEarnings : Float
   , remaining_upgrades : List Upgrade
   , active_upgrades : List Upgrade
+  , modalOpened : Bool
   , gui :
     { clickerAccordion : Accordion.State
     , upgradeAccordion : Accordion.State
@@ -37,6 +38,7 @@ init =
    , clickEarnings = 1.0
    , remaining_upgrades = Types.upgradeList
    , active_upgrades = []
+   , modalOpened = False
    , gui =
      { clickerAccordion = Accordion.initialState
      , upgradeAccordion = Accordion.initialState
