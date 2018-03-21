@@ -62,8 +62,7 @@ tick model interval time =
 animTick : Model -> Float -> (Model, Cmd Msg)
 animTick model diff =
   let
-    model2 = CodeEffect.tickCodeEffect model diff
-    newModel = if model2.modalOpened then model2 else (\(m, c) -> m) (update Msgs.ShowIntroModal model2)
+    newModel = CodeEffect.tickCodeEffect model diff
     oldGui = newModel.gui
     newGui =
       { oldGui
@@ -73,7 +72,11 @@ animTick model diff =
 
 saveInterval : Model -> Time -> Time -> (Model, Cmd Msg)
 saveInterval model interval time =
-  (model, Storage.saveModel (Storage.serializeModel model))
+  let
+    newModel = if model.modalOpened then model else (\(m, c) -> m) (update Msgs.ShowIntroModal model)
+  in
+    ({ newModel | modalOpened = newModel.modalOpened || (newModel.gui.introModalVis == Modal.shown) }
+      , Storage.saveModel (Storage.serializeModel newModel))
 
 applyModel : Model -> Maybe SerializedModel -> (Model, Cmd Msg)
 applyModel model sModel =
@@ -144,7 +147,7 @@ showIntroModal model =
     oldGui = model.gui
     newGui = {oldGui | introModalVis = Modal.shown}
   in
-    ({ model | modalOpened = True, gui = newGui }, Cmd.none)
+    ({ model | gui = newGui }, Cmd.none)
 
 {-
   Helper functions

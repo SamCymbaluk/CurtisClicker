@@ -26,7 +26,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model = Sub.batch
   [ Time.every tickRate (Msgs.Tick tickRate)
   , Anim.diffs Msgs.AnimTick
-  , Time.every (second * 10) (Msgs.SaveInterval (second * 10))
+  , Time.every (second / 2) (Msgs.SaveInterval (second / 2))
   , Accordion.subscriptions model.gui.clickerAccordion Msgs.ClickerAccordion
   , Accordion.subscriptions model.gui.upgradeAccordion Msgs.UpgradeAccordion
   , loadModelRes Msgs.ApplyModel
