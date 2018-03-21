@@ -103,7 +103,8 @@ description upgrade = case upgrade of
   Deadlines ->
     "Due tomorrow? Do tomorrow."
   Tenure ->
-    ""
+    "The most productive professor\n"
+    ++ "is one that is ~almost~ tenured"
   UnethicalStudies ->
     "AI Safety? What's that?"
 

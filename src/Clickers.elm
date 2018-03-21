@@ -90,15 +90,18 @@ description clicker =
     UndergradStudent ->
       "Code quality not guaranteed"
     GradStudent ->
-      "Grad Student"
+      "Knows enough to have heard of\n"
+      ++ "unsafePerformIO, but not enough\n"
+      ++ "to know not to use it"
     Professor ->
-      "Professor"
+      "Have the professors working for YOU"
     Startup ->
       "Something something Deep Learning Blockchain"
     ResearchTeam ->
-      "Research Team"
+      "What one programmer can do in one week\n"
+      ++ "five programmers can do in five weeks"
     AGI ->
-      "Artificial General Intelligence"
+      "The Singularity is upon us!"
 
 {-| Returns the purchase cost of a Clicker, given
 that some quantity has already been purchased
