@@ -19,4 +19,4 @@ yarn client
 ```
 yarn build
 ```
-The contents of `dist` can now be placed into a Html server directory
+The contents of `dist` can now be placed into an HTML server directory.
